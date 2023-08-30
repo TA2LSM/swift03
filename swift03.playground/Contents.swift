@@ -301,10 +301,268 @@ import Foundation
 
 
 //--- 25. CODABLE ---
+// Encodable >> encode data to sending format (send data to server)
+// Decodable >> decode data from receiving format (receive data from server)
+
+//struct Person {
+//    let name: String
+//    let surname: String
+//
+//    // JSON data format
+//    var jsonMessage: String {
+//         return """
+//         {
+//             "name": \(name)
+//             "surname": \(surname)
+//         }
+//         """
+//    }
+//}
+
+//struct Person: Codable { // Codable >> Encodable & Decodable
+//    let name: String
+//    let surname: String
+//    let age: Int?
+//}
+//let person = Person(name: "TA2LSM", surname: "Super!", age: 40)
+//
+//let jsonEncoder = JSONEncoder()
+//let jsonDecoder = JSONDecoder()
+//var encodedData: Data = "{}".data(using: .utf8)!
+//var decodedData: Person
+//let encodedData2 = """
+//{
+//    "name": "test",
+//    "surname": "deneme"
+//}
+//""".data(using: .utf8)!
+//
+//do {
+//    encodedData = try jsonEncoder.encode(person)
+//    //print(encodedData)
+//
+//    //URLSession uses data format
+//} catch {
+//    print("ERROR: Encoder", error)
+//}
+//
+//do {
+//    decodedData = try jsonDecoder.decode(Person.self, from: encodedData2)
+////    decodedData = try jsonDecoder.decode(Person.self, from: encodedData)
+//    print(decodedData)
+//} catch {
+//    print("ERROR: Decoder", error)
+//}
+
+// In Swift general aproach about naming is camelSize, but generally in backend
+// snake_size used by most coders
+//struct Person: Codable { // Codable >> Encodable & Decodable
+//    let firstName: String
+//    let lastName: String
+//}
+//
+//let jsonDecoder = JSONDecoder()
+//jsonDecoder.keyDecodingStrategy = .convertFromSnakeCase
+//
+//do {
+//    let testData = """
+//    {
+//        "first_name": "test",
+//        "last_name": "deneme"
+//        "date_of_birth": "06.09.1983"
+//    }
+//    """.data(using: .utf8)!
+//
+//    let person = try jsonDecoder.decode(Person.self, from: testData)
+//    print(person)
+//} catch {
+//    print("ERROR: Decoder", error)
+//}
+
+
+//struct Person: Codable { // Codable >> Encodable & Decodable
+//    enum CodingKeys: String, CodingKey {
+//        case firstName = "first_name"
+//        case lastName = "last_name"
+//        case birthday = "date_of_birth"
+//        case age
+//    }
+//
+//    let firstName: String
+//    let lastName: String
+//    let birthday: String
+//    let age: Int
+//}
+//
+//let jsonDecoder = JSONDecoder()
+//
+//do {
+//    let testData = """
+//    {
+//        "first_name": "test",
+//        "last_name": "deneme",
+//        "date_of_birth": "06.09.1983",
+//        "age": 40
+//    }
+//    """.data(using: .utf8)!
+//
+//    let person = try jsonDecoder.decode(Person.self, from: testData)
+//    print(person)
+//} catch {
+//    print("ERROR: Decoder >>", error)
+//}
+
+
+//struct Person: Codable { // Codable >> Encodable & Decodable
+//    enum CodingKeys: String, CodingKey {
+//        case firstName = "first_name"
+//        case lastName = "last_name"
+//        case birthday = "date_of_birth"
+//    }
+//
+//    let firstName: String
+//    let lastName: String
+//    let birthday: Date
+//}
+//
+//let formatter = DateFormatter()
+//formatter.dateFormat = "dd.MM.yyyy"
+//
+//let jsonDecoder = JSONDecoder()
+//jsonDecoder.dateDecodingStrategy = .formatted(formatter)
+//
+//do {
+//    let testData = """
+//    {
+//        "first_name": "test",
+//        "last_name": "deneme",
+//        "date_of_birth": "06.09.1983"
+//    }
+//    """.data(using: .utf8)!
+//
+//    let person = try jsonDecoder.decode(Person.self, from: testData)
+//    print(person)
+//} catch {
+//    print("ERROR: Decoder >>", error)
+//}
+
+
+//struct Product: Decodable {
+//    let name: String
+//    let price: String
+//}
+//
+//let json = """
+//[
+//    {
+//        "name": "Apple Watch 8",
+//        "price": "399$"
+//    },
+//    {
+//        "name": "Apple MacBook Pro M2 16-inch",
+//        "price": "3499$"
+//    },
+//]
+//"""
+//
+//let object = try? JSONDecoder().decode(
+//    [Product].self,                 // tell compiler this is an array
+//    from: json.data(using: .utf8)!
+//)
+//print(object)
+
+
+//struct Price: Decodable {
+//    let amount: Int
+//    let currency: String
+//}
+//
+//struct Product: Decodable {
+//    let name: String
+//    let price: Price
+//}
+//
+//let json = """
+//{
+//    "name": "Apple Watch 8",
+//    "price": {
+//        "amount": 399,
+//        "currency": "$"
+//    }
+//}
+//"""
+//
+//let object = try? JSONDecoder().decode(
+//    Product.self,
+//    from: json.data(using: .utf8)!
+//)
+//print(object)
+
+
+// custom decoding
+//struct Product: Codable {
+//    enum CodingKeys: String, CodingKey {
+//        case name
+//        case price
+//    }
+//
+//    enum PriceCodingKeys: String, CodingKey {
+//        case amount
+//        case currency
+//    }
+//
+//    let name: String
+//    let price: String
+//
+//    init(from decoder: Decoder) throws {
+//        let container = try decoder.container(keyedBy: CodingKeys.self)
+//        self.name = try container.decode(String.self, forKey: CodingKeys.name)
+//
+//        let priceContainer = try container.nestedContainer(
+//            keyedBy: PriceCodingKeys.self,
+//            forKey: CodingKeys.price
+//        )
+//        let amount = try priceContainer.decode(Int.self, forKey: PriceCodingKeys.amount)
+//        let currency = try priceContainer.decode(String.self, forKey: PriceCodingKeys.currency)
+//        self.price = "\(amount)\(currency)"
+//    }
+//
+//    // override
+////    func encode(to encoder: Encoder) throws {
+////        var container = try encoder.container(keyedBy: CodingKeys.self)
+////        try container.encode(self.name, forKey: CodingKeys.name)
+////
+////        var priceContainer = try container.nestedContainer(
+////            keyedBy: PriceCodingKeys.self,
+////            forKey: CodingKeys.price
+////        )
+////
+////        //...
+////    }
+//}
+//
+//let json = """
+//{
+//    "name": "Apple Watch 8",
+//    "price": {
+//        "amount": 399,
+//        "currency": "$"
+//    }
+//}
+//"""
+//
+//let object = try? JSONDecoder().decode(
+//    Product.self,
+//    from: json.data(using: .utf8)!
+//)
+//print(object)
 
 
 
 //--- 26. PROPERTY WRAPPERS ---
+
+
+
 
 
 
