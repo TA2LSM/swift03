@@ -561,12 +561,182 @@ import Foundation
 
 //--- 26. PROPERTY WRAPPERS ---
 
+//@propertyWrapper
+//struct Uppercase {
+//    private var text: String
+//
+//    var wrappedValue: String {
+//        // Override these properties on String
+//        get {
+//            return text.localizedUppercase
+//        }
+//
+//        // new value is a special keyword
+//        set {
+//            self.text = newValue.localizedUppercase
+//        }
+//    }
+//
+//    // wrappedValue is a special keyword
+//    init(wrappedValue: String) {
+//        self.text = wrappedValue
+////        self.text = wrappedValue.localizedUppercase       // no need to do this in here
+//    }
+//}
+//
+//struct Person {
+//    // property wrappers CAN NOT to be used as root level of code
+//    // written in Person struct
+//    @Uppercase
+//    var name = "ta2lsm"
+//
+//    @Uppercase
+//    var surname = "super!"
+//}
+//
+//// getting name property
+//Person().name
+//Person().surname
+
+
+//@propertyWrapper
+//struct FormattedNumber {
+//    private var number: Double = 0
+//
+//    var wrappedValue: String {
+//        get {
+//            String(format: "%.2f", number)
+//        }
+//
+//        set {
+//            number = Double(newValue) ?? 0       // cast newValue of String as double if fails set as 0
+////            self.number = Double(newValue) ?? 0
+//        }
+//    }
+//}
+//
+//struct Price {
+//    @FormattedNumber public var amount: String      // without "public" amount is not accessible
+//}
+//
+//var price = Price()
+//price.amount = "100.275321"
+//print(price.amount)
+//print(Double(price.amount)!)
+
+
+//@propertyWrapper
+//struct ValidatedString {
+//    private var returnValue: String = ""        // without empty string ("") here we MUST use user = Text(name: "...")
+//
+//    var wrappedValue: String {
+//        get { returnValue }
+//
+//        set {
+//            returnValue = String(newValue.prefix(10))
+//        }
+//    }
+//}
+//
+//struct Text {
+//    @ValidatedString public var name: String
+//}
+//
+//var user = Text()
+//user.name = "ta2lsm"
+//print(user.name)
+//user.name = "this string has more than 10 characters"
+//print(user.name)
+
+
+// burritos -> github
+//@propertyWrapper
+//struct UndoRedo<T> {
+//    private var index: Int = -1
+//    private var values: [T] = []
+//
+//    var wrappedValue: T {
+//        get {
+//            values[index]
+//        }
+//
+//        set {
+//            index += 1
+//            values.append(newValue)
+//        }
+//    }
+//
+//    mutating func undo() {
+//        if index > -1 {
+//            index -= 1
+//            values.removeLast()
+//        }
+//    }
+//
+//}
+//
+//struct Test {
+//    @UndoRedo var name: String
+//    @UndoRedo var age: Int
+//
+//    mutating func undoAll() {
+//        _name.undo()
+//        _age.undo()
+//    }
+//}
+//
+//var test = Test()
+//test.name = "ayse"
+//test.name = "ali"
+//test.name = "veli"
+//
+//test.age = 35
+//test.age = 40
+//
+//test.name
+//test.age
+//test.undoAll()
+//test.name
+//test.age
+
+
+// UserDefaults
+//@propertyWrapper
+//struct UserDefault<T> {
+//
+//    let key: String
+//    let defaultValue: T
+//
+//    var wrappedValue: T {
+//        set {
+//            UserDefaults.standard.setValue(newValue, forKey: key)
+//        }
+//
+//        get {
+//            UserDefaults.standard.value(forKey: key) as? T ?? defaultValue
+//        }
+//    }
+//}
+//
+//struct App {
+//    @UserDefault(key: "is_app_opened_before", defaultValue: false)
+//    var isOpened: Bool
+//}
+//
+//var app = App()
+//app.isOpened
+//app.isOpened = true
+//app.isOpened
+
+
+
+//--- 27. MEMORY MANAGEMENT ---
 
 
 
 
 
-//--- 27. CONCURRENCY ---
+
 
 
 
