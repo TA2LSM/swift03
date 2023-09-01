@@ -906,13 +906,348 @@ import Foundation
 
 //--- 28. CONCURRENCY ---
 
-// more than one process work on the same time
+// more than one process work on the same time even they are independed from each other
+// context switch (Single Core CPU)
+// parallelism (Multi Core CPU)
+// Thread: process working on CPU's core
 
 
+//func loadUser() async -> Int {
+//    let url = URL(string: "https://reqres.in/api/users/2")!
+////    let url = URL(string: "https://jsonplaceholder.org/users/1")!
+//
+//    do {
+//        let result = try await URLSession.shared.data(from: url)        // code suspends here but not thread!
+//
+////        print((result.1 as! HTTPURLResponse).statusCode)                // code resumes on any thread (coul not be the same thread)
+//        return (result.1 as! HTTPURLResponse).statusCode
+//    } catch {
+//        print("ERROR (HTTP GET) >>", error)
+//        return -1
+//    }
+//}
 
 
+//print("POS 1")
+//
+//func loadUser() async -> Int {
+//    let url = URL(string: "https://reqres.in/api/users/2")!
+//    let result = try? await URLSession.shared.data(from: url)
+//
+//    return (result?.1 as? HTTPURLResponse)?.statusCode ?? -1
+//}
+//
+////await loadUser()
+//
+////func main() async {
+////    loadUser()
+////}
+//
+//func main() {
+//    print("a")
+//
+//    let task = Task {
+//        try? await Task.sleep(nanoseconds: NSEC_PER_SEC * 3)
+//
+//        let result = await loadUser()
+//
+//        print("Task cancelled:", Task.isCancelled)
+//
+//        // check if this task cancelled here! (cooperative cancellation)
+//
+//        print(result)
+//    }
+//
+//    // uncomment below and try again
+////    task.cancel()     // this will not give a guarantee to stop task
+//
+//    print("b")
+//}
+//
+//main()
+//print("POS 2")
+
+
+// async let
+
+//import UIKit
+//
+//func downloadImage(id: Int) async -> UIImage {
+//    let url = URL(string: "https://picsum.photos/200")!
+//
+//    let data = try! await URLSession.shared.data(from: url)
+//    return UIImage(data: data.0)!
+//}
+//
+//func downloadImages() {
+//    Task {
+//        async let image1 = downloadImage(id: 1)     // independed processes (context switch)
+//        async let image2 = downloadImage(id: 2)
+//        async let image3 = downloadImage(id: 3)
+//
+//        let images = await [image1, image2, image3]
+//    }
+//}
+//
+//downloadImages()
 
 
 //--- 29. ADVANCED PROTOCOLS ---
 
+//protocol Talking {
+////    var name: String { get }
+//
+//    func talk()
+//    init(name: String, sound: String)
+//}
+//
+//protocol Talking2 {
+////    var name: String { get }
+//
+//    func talk()
+//    init(sound: String)
+//}
+//
+//protocol Walking {
+//    func walk()
+//}
+//
+//struct Person: Talking, Walking {
+//    let name: String
+//    let sound: String
+//
+//    init(name: String, sound: String) {
+//        self.name = name
+//        self.sound = sound
+//    }
+//
+//    func talk() {
+//        print("\(name) is talking: \(sound)")
+//    }
+//
+//    func walk() {
+//        print("\(name) is walking...")
+//    }
+//}
+////-----------------
+//
+//let person = Person(name: "TA2LSM", sound: "bla-bla")
+////person.talk()
+//
+////-----------------
+//struct Animal {
+//    let name: String
+//    let sound: String
+//
+//    init(name: String, sound: String) {
+//        self.name = name
+//        self.sound = sound
+//    }
+//}
+//
+//extension Animal: Talking {
+//    func talk() {
+//        print("\(name) is talking: \(sound)")
+//    }
+//}
+////-----------------
+//
+//let animal = Animal(name: "Bird", sound: "cik-cik")
+//
+//// checking if person conforms to Walking
+////person as? Walking
+////person is Walking
+////animal as? Talking
+//
+////if animal is Talking {
+////    print("This could be a Parrot!")
+////} else {
+////    print("Animals can't talk! Are they?")
+////}
+//
+////animal.talk()
+//
+//class TalkShow {
+//    let talkingItems: [Talking]
+//
+//    init(_ talkingItems: [Talking]) {
+//        self.talkingItems = talkingItems
+//    }
+//
+//    func cheer() {
+//        talkingItems.forEach { $0.talk() }
+//    }
+//}
+//
+//let show = TalkShow([person, animal])
+//show.cheer()
+//
+////-----------------
+//class Man {
+//    let name: String
+////    let sound: String
+//
+//    init(name: String) {
+//        self.name = name
+//    }
+//
+//    required init(sound: String) {
+////        self.sound = sound
+//        name = ""
+//    }
+//}
+//
+//class SuperMan: Man {
+//    // no problem
+//}
+//
+//extension Man: Talking2 {
+//    func talk() {
+//        print("Hello my name is \(name)")
+//    }
+//}
+//
+//final class Woman {
+//    let name: String
+//
+//    init(name: String) {
+//        self.name = name
+//    }
+//
+//    init(sound: String) {
+//        name = ""
+//    }
+//}
+//
+//extension Woman: Talking2 {
+//    func talk() {
+//        print("Hello my name is \(name)")
+//    }
+//}
 
+//-----------------
+
+//protocol Talking {
+//    func talk()
+//}
+//
+//protocol Walking {
+//    func walk()
+//}
+//
+//// protocol extension
+//extension Walking {
+//    func walk() {
+//        print("walking...")
+//    }
+//}
+//
+//struct Person {
+//    let name: String
+//}
+//
+//extension Person: Talking {
+//    func talk() {
+//        print("Hello my name is \(name)")
+//    }
+//}
+//
+//extension Person: Walking { }
+//
+//class Animal: Talking, Walking {
+//    let name: String
+//
+//    init(name: String) {
+//        self.name = name
+//    }
+//
+//    func talk() {
+//        print("hav-hav")
+//    }
+//
+//    func walk() {
+//        print("\(name) is walking...")
+//    }
+//}
+//
+//let person = Person(name: "TA2LSM")
+//let animal = Animal(name: "Bird")
+//let animal2 = Animal(name: "Cat")
+//
+//
+//// conditional conformance
+//extension Array: Talking where Element == Talking {
+//    func talk() {
+//        self.forEach { item in
+//            item.talk()
+//        }
+//    }
+//}
+//
+////let array: [Talking] = [person, animal, animal2]
+////array.talk()
+//
+//typealias type = Talking & Walking
+//
+//class TalkShow {
+//    let items: [type]     // protocol composition
+//
+//    init(_ items: [type]) {
+//        self.items = items
+//    }
+//
+////    func cheer() {
+////        items.talk()
+//          // CAN NOT to be used with items.forEach...
+////    }
+//
+//    func cheer() {
+//        items.forEach { e in
+//            e.talk()
+//        }
+//
+//        items.forEach { e in
+//            e.walk()
+//        }
+//    }
+//}
+//
+//let show = TalkShow([person, animal, animal2])
+//show.cheer()
+
+
+// Associated type
+
+struct Person: Decodable {
+    let name: String
+}
+
+struct Account: Decodable {
+    let accountNumber: Int
+}
+
+protocol Request {
+    associatedtype Response: Decodable
+    var url: URL { get set }
+}
+
+struct LoginRequest: Request {
+    typealias Response = Person
+    var url: URL = URL(string: "localhost:3000/api/v1/login")!
+}
+
+struct AccountRequest: Request {
+    typealias Response = Account
+    var url: URL = URL(string: "localhost:3000/api/v1/account")!
+}
+
+let loginReq = LoginRequest()
+/*
+ -> send request
+ <- get response to data
+ = call let model = JSONDecoder().decode(loginReq.Response.self, from: data)
+ ! model is "nil" when account type data received because "loginReq" Response type is "Person"
+ */
+
+//--- END OF LESSON ---
+// 01.09.2023
