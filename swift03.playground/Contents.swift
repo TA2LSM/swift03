@@ -732,17 +732,185 @@ import Foundation
 
 //--- 27. MEMORY MANAGEMENT ---
 
+// For RAM optimization we should use class
+// There is no "Garbage Collector" in IOS because of some delay when collector works
+// and bad user experience.
+
+// Manual Memory Management
+//class Person {
+//    var name: String
+//
+//    init(name: String) {
+//        self.name = name
+//    }
+//    deinit {
+//        print("Person: \(name) removed!")
+//    }
+//}
+//
+//// BEFORE
+////let person1 = Person(name: "TA2LSM")
+////person1.release()
+//
+////let person1 = Person(name: "TA2LSM").autorelease()
+////person1.release()               // PROBLEM: already erased
+//
+//class App {
+//    var person: Person?
+//
+//    deinit {
+//        print("App removed!")
+//    }
+//}
+//
+//// When swiftUI these kind of things will not to be needed
+//// swiftUI will automatically make pages "nil" when user closes them
+//
+//// --- scope ---
+//
+//var app: App? = App()
+//app?.person = Person(name: "TA2LSM")
+//
+//// comment out this below and try again
+////var person1 = app?.person           // only app will be removed (when uncommented)
+//
+//app = nil                           // app and person will be removed
+////person1 = nil                     // app and person will be removed (when uncommented)
+//
+// --- end of scope ---
 
 
+//class Person {
+//    var name: String
+//
+//    init(name: String) {
+//        self.name = name
+//    }
+//    deinit {
+//        print("Person: \(name) removed!")
+//    }
+//}
+//
+//class App {
+//    var person: Person?
+//
+//    deinit {
+//        print("App removed!")
+//    }
+//
+//    func test() {
+//        let person1 = Person(name: "TA2LSM")
+//        let person2 = Person(name: "Super!")
+//
+//        // uncomment this below and try again
+//        //person = person1
+//    }
+//}
+//
+//// --- scope ---
+//var app: App? = App()
+//print("Pos: 1")
+//app?.test()
+//print("Pos: 2")
+//// --- end of scope ---
 
 
+// Retain Cycle (BIG MEMOTY ISSUE)
+//class Person {
+//    var pet: Dog?               // strong reference with Dog class
+//    var name: String
+//
+//    init(name: String) {
+//        self.name = name
+//    }
+//
+//    deinit {
+//        print("Person: \(name) removed!")
+//    }
+//}
+//
+//class Dog {
+//    var owner: Person?          // strong reference with Person class
+//    var name: String
+//
+//    init(name: String) {
+//        self.name = name
+//    }
+//
+//    deinit {
+//        print("Dog: \(name) removed!")
+//    }
+//}
+//
+////var person1: Person? = Person(name: "TA2LSM")
+////person1?.pet?.name
+////person1?.pet = Dog(name: "Brutus")
+////person1?.pet?.name
+////
+//////var refDog = person1?.pet
+//////person1 = nil           // person will be removed
+////
+////person1 = nil           // person and dog will be removed
+//
+//
+//var person1: Person? = Person(name: "TA2LSM")
+//var dog1: Dog? = Dog(name: "Brutus")
+//person1?.pet?.name
+//person1?.pet = dog1
+//person1?.pet?.name
+//dog1?.owner = person1
+//
+//person1 = nil           // nothing will be removed (RETAIN CYCLE)
+//dog1 = nil
 
 
+//class Person {
+//    var pet: Dog?               // strong reference with Dog class
+//    var name: String
+//
+//    init(name: String) {
+//        self.name = name
+//    }
+//
+//    deinit {
+//        print("Person: \(name) removed!")
+//    }
+//}
+//
+//class Dog {
+//    weak var owner: Person?          // weak reference with Person class (this allows person = nil)
+////    unowned var owner: Person
+//
+//    var name: String
+//
+//    init(name: String) {
+//        self.name = name
+//    }
+//
+//    deinit {
+//        print("Dog: \(name) removed!")
+//    }
+//}
+//
+//var person1: Person? = Person(name: "TA2LSM")
+//var dog1: Dog? = Dog(name: "Brutus")
+//person1?.pet?.name
+//person1?.pet = dog1
+//person1?.pet?.name
+//dog1?.owner = person1
+////dog1?.owner = person1!          // because of "unowned" keyword in Dog class
+//
+//person1 = nil               // person will be removed
+//dog1 = nil                  // dog will be removed
 
 
 //--- 28. CONCURRENCY ---
 
 // more than one process work on the same time
+
+
+
+
 
 
 //--- 29. ADVANCED PROTOCOLS ---
